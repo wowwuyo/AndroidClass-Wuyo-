@@ -10,7 +10,8 @@ import android.view.View.OnClickListener;
 import android.view.*;
 import android.view.View.OnKeyListener;
 import android.widget.*;
-
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.content.Intent;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -18,7 +19,7 @@ public class MainActivity extends ActionBarActivity {
 	EditText txtE1;
 	CheckBox chkbox;
 	SeekBar sb;
-	Editor editor;
+	private Editor editor;
 	private SharedPreferences sp;
 	
     @Override
@@ -60,13 +61,24 @@ public class MainActivity extends ActionBarActivity {
 				sendText("9981");
 			}
 			txtE1.setText(sp.getString("text", "Null"));
-			//editText.setText(sp.getString("text", ""));
-			//checkBox.setChecked(sp.getBoolean("checkbox", false));
 			return false;
 		}
     	   
        });
-        
+       
+       chkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			// TODO Auto-generated method stub
+			editor.putBoolean("checked", isChecked);
+			editor.commit();
+		}
+    	   
+       });
+       txtE1.setText(sp.getString("text",	""));
+       chkbox.setChecked(sp.getBoolean("checked",false));
     }
     
     public void clkButton(View v){
@@ -82,8 +94,13 @@ public class MainActivity extends ActionBarActivity {
     	}
     	//Toast.makeText(this, str+" from "+bNum, Toast.LENGTH_LONG).show();
     	Toast.makeText(this, str+" from "+bNum+" >> "+val, Toast.LENGTH_SHORT).show();
-    	
     	txtE1.setText("");
+    	
+    	Intent intent = new Intent();
+    	intent.setClass(this, ActivityMessage.class);
+    	//intent.getExtras();
+    	intent.putExtra("text", str);
+    	startActivity(intent);
     }
 
     @Override
